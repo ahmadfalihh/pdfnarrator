@@ -41,6 +41,7 @@ jobs:
           DRIVE_FOLDER_ID=${{ vars.DRIVE_FOLDER_ID }}
           YOUTUBE_CHANNEL_ID=${{ vars.YOUTUBE_CHANNEL_ID }}
           YT_UPLOAD_DELAY_MINUTES=${{ vars.YT_UPLOAD_DELAY_MINUTES || '60' }}
+                              BGM_VOLUME=${{ vars.BGM_VOLUME || '15' }}
           EOF
 
       - name: Google Credentials
