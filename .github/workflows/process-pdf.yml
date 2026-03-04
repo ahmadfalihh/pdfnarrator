@@ -1,0 +1,76 @@
+name: 🎬 PDF to Video Processor
+
+on:
+  push:
+    paths:
+      - 'input/*.pdf'
+  workflow_dispatch:
+
+jobs:
+  process-pdf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 🔧 Install Poppler & FFmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils ffmpeg
+
+      - name: 📦 npm install
+        run: npm install
+
+      - name: 🔑 Create .env
+        run: |
+          cat > .env << EOF
+          GEMINI_KEY_1=${{ secrets.GEMINI_KEY_1 }}
+          GEMINI_KEY_2=${{ secrets.GEMINI_KEY_2 }}
+          GEMINI_KEY_3=${{ secrets.GEMINI_KEY_3 }}
+          NARRATION_STYLE=${{ vars.NARRATION_STYLE || 'Profesional & Formal' }}
+          NARRATOR_VOICE=${{ vars.NARRATOR_VOICE || 'Zephyr' }}
+          SLIDE_DELAY=${{ vars.SLIDE_DELAY || '10' }}
+          UPLOAD_DRIVE=${{ secrets.GOOGLE_CREDENTIALS && 'true' || 'false' }}
+          UPLOAD_YOUTUBE=${{ secrets.GOOGLE_CREDENTIALS && 'true' || 'false' }}
+          YOUTUBE_PRIVACY=${{ vars.YOUTUBE_PRIVACY || 'public' }}
+          DRIVE_FOLDER_ID=${{ vars.DRIVE_FOLDER_ID }}
+          YOUTUBE_CHANNEL_ID=${{ vars.YOUTUBE_CHANNEL_ID }}
+          YT_UPLOAD_DELAY_MINUTES=${{ vars.YT_UPLOAD_DELAY_MINUTES || '60' }}
+          EOF
+
+      - name: 🔐 Google Credentials
+        if: ${{ secrets.GOOGLE_CREDENTIALS != '' }}
+        run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
+
+      - name: 🎫 Google Token
+        if: ${{ secrets.GOOGLE_TOKEN != '' }}
+        run: echo '${{ secrets.GOOGLE_TOKEN }}' > google_token.json
+
+      - name: 📄 List PDFs
+        run: ls -la input/*.pdf 2>/dev/null || echo "No PDFs"
+
+      - name: 🚀 Process PDFs (Render + Upload with delays)
+        run: node process.js
+
+      - name: 📤 Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-${{ github.run_number }}
+          path: output/*.mp4
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 📝 Commit status
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A status.json input/done/
+          git diff --staged --quiet || git commit -m "✅ Run #${{ github.run_number }}"
+          git push || true
