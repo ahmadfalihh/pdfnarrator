@@ -1,0 +1,14 @@
+{
+    "lastUpdated": "",
+    "phase": "idle",
+    "videos": [],
+    "renderProgress": {
+        "done": 0,
+        "total": 0
+    },
+    "ytProgress": {
+        "done": 0,
+        "total": 0,
+        "nextUploadAt": ""
+    }
+}

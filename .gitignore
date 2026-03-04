@@ -1,0 +1,8 @@
+node_modules/
+.env
+google_token.json
+credentials.json
+poppler/
+poppler_download.zip
+.tmp_processing/
+output/*.mp4
