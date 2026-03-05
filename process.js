@@ -10,14 +10,12 @@
  *  node process.js --auth       → Login Google
  * ===================================================================
  */
-
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const https = require('https');
 const { execSync } = require('child_process');
-
 // ============================
 //  CONFIG FROM .env
 // ============================
@@ -37,7 +35,6 @@ const CONFIG = {
     youtubePrivacy: process.env.YOUTUBE_PRIVACY || 'public',
     ytUploadDelayMin: parseInt(process.env.YT_UPLOAD_DELAY_MINUTES) || 60,
 };
-
 const INPUT_DIR = path.join(__dirname, 'input');
 const OUTPUT_DIR = path.join(__dirname, 'output');
 const DONE_DIR = path.join(INPUT_DIR, 'done');
@@ -46,7 +43,6 @@ const TOKEN_PATH = path.join(__dirname, 'google_token.json');
 const CREDENTIALS_PATH = path.join(__dirname, 'credentials.json');
 const POPPLER_DIR = path.join(__dirname, 'poppler');
 const STATUS_PATH = path.join(__dirname, 'status.json');
-
 // ============================
 //  LOGGING
 // ============================
@@ -56,7 +52,6 @@ const logOK = (m) => console.log(`[${ts()}] ✅ ${m}`);
 const logWarn = (m) => console.log(`[${ts()}] ⚠️  ${m}`);
 const logErr = (m) => console.error(`[${ts()}] ❌ ${m}`);
 const logStep = (m) => console.log(`[${ts()}] 🔄 ${m}`);
-
 // ============================
 //  HELPERS
 // ============================
@@ -66,7 +61,6 @@ function ensureDirs() {
     });
 }
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
-
 function downloadFile(url, dest) {
     return new Promise((resolve, reject) => {
         const follow = (u) => {
@@ -83,7 +77,6 @@ function downloadFile(url, dest) {
         follow(url);
     });
 }
-
 // ============================
 //  STATUS.JSON (Live Report)
 // ============================
@@ -102,7 +95,6 @@ function gitAutoCommit(msg) {
         execSync('git push 2>&1', { cwd: __dirname, encoding: 'utf8', timeout: 30000 });
     } catch (e) { /* not fatal — might not be a git repo */ }
 }
-
 // ============================
 //  POPPLER SETUP (Windows)
 // ============================
@@ -130,7 +122,6 @@ async function setupPoppler() {
         return false;
     }
 }
-
 function findPdftoppm() {
     const bundled = path.join(POPPLER_DIR, 'Library', 'bin', 'pdftoppm.exe');
     if (fs.existsSync(bundled)) return bundled;
@@ -138,7 +129,6 @@ function findPdftoppm() {
     try { const r = execSync(cmd, { encoding: 'utf8', timeout: 5000 }).trim(); if (r) return r.split('\n')[0].trim(); } catch (e) { }
     return null;
 }
-
 // ============================
 //  GEMINI API + ROTATION + BACKOFF
 // ============================
@@ -172,7 +162,6 @@ async function callGemini(model, payload, retryCount = 0) {
         throw err;
     }
 }
-
 // ============================
 //  GOOGLE OAUTH
 // ============================
@@ -193,7 +182,6 @@ async function getOAuth2Client() {
     }
     return null;
 }
-
 async function authenticateGoogle() {
     if (!fs.existsSync(CREDENTIALS_PATH)) { logErr('credentials.json tidak ada!'); process.exit(1); }
     const { google } = require('googleapis');
@@ -216,7 +204,6 @@ async function authenticateGoogle() {
         server.listen(3847, () => openBrowser(authUrl).catch(() => logWarn('Buka URL manual.')));
     });
 }
-
 // ============================
 //  PDF TO IMAGES
 // ============================
@@ -229,7 +216,6 @@ async function pdfToImages(pdfPath, outputDir) {
     logOK(`${files.length} halaman.`);
     return files.map(f => path.join(outputDir, f));
 }
-
 // ============================
 //  PCM → WAV
 // ============================
@@ -242,7 +228,6 @@ function pcmToWavFile(b64, out, sr = 24000) {
     h.write('data', 36); h.writeUInt32LE(pcm.length, 40);
     fs.writeFileSync(out, Buffer.concat([h, pcm]));
 }
-
 // ============================
 //  RENDER VIDEO (FFMPEG)
 // ============================
@@ -283,7 +268,6 @@ async function renderVideo(slides, outputPath) {
     });
     logOK(`Video: ${outputPath}`);
 }
-
 // ============================
 //  UPLOAD DRIVE
 // ============================
@@ -297,7 +281,6 @@ async function uploadToDrive(auth, filePath, fileName) {
     logOK(`Drive OK. ID: ${res.data.id}`);
     return res.data;
 }
-
 // ============================
 //  UPLOAD YOUTUBE
 // ============================
@@ -316,7 +299,6 @@ async function uploadToYouTube(auth, filePath, seo, pdfName) {
     logOK(`YouTube OK! ID: ${res.data.id} → https://youtube.com/watch?v=${res.data.id}`);
     return res.data;
 }
-
 // ============================
 //  SEO METADATA
 // ============================
@@ -328,7 +310,6 @@ async function generateSEO(allTexts) {
 3. tags: Min 15 tag trending Indonesia.
 Kembalikan HANYA JSON valid tanpa markdown:
 {"title":"...","description":"...","tags":["..."]}
-
 Teks: ${allTexts.join(' ').substring(0, 15000)}`;
     try {
         const res = await callGemini('gemini-2.5-flash', {
@@ -342,7 +323,6 @@ Teks: ${allTexts.join(' ').substring(0, 15000)}`;
         return seo;
     } catch (e) { logWarn(`SEO gagal: ${e.message}`); return null; }
 }
-
 // ============================
 //  PROCESS SINGLE PDF
 // ============================
@@ -351,18 +331,15 @@ async function processSinglePDF(pdfPath, auth, status, idx) {
     const v = status.videos[idx];
     log(`\n${'='.repeat(60)}\n📄 ${pdfName}.pdf\n${'='.repeat(60)}`);
     v.renderStatus = 'rendering'; writeStatus(status);
-
     const workDir = path.join(TEMP_DIR, pdfName.replace(/[^a-zA-Z0-9_-]/g, '_'));
     if (fs.existsSync(workDir)) fs.rmSync(workDir, { recursive: true });
     fs.mkdirSync(workDir, { recursive: true });
     const imgDir = path.join(workDir, 'images'), audDir = path.join(workDir, 'audio');
     fs.mkdirSync(imgDir, { recursive: true }); fs.mkdirSync(audDir, { recursive: true });
-
     let imagePaths;
     try { imagePaths = await pdfToImages(pdfPath, imgDir); }
     catch (e) { logErr(`PDF→IMG gagal: ${e.message}`); v.renderStatus = 'error'; writeStatus(status); return; }
     if (!imagePaths.length) { v.renderStatus = 'error'; writeStatus(status); return; }
-
     const slides = [], allTexts = [];
     for (let i = 0; i < imagePaths.length; i++) {
         logStep(`Slide ${i + 1}/${imagePaths.length}: Narasi...`);
@@ -378,7 +355,6 @@ async function processSinglePDF(pdfPath, auth, status, idx) {
             logOK(`  ${script.substring(0, 70)}...`);
         } catch (e) { logWarn(`  Narasi gagal: ${e.message}`); script = `Slide ${i + 1} menampilkan informasi penting.`; }
         allTexts.push(script);
-
         logStep(`Slide ${i + 1}/${imagePaths.length}: TTS...`);
         try {
             const r = await callGemini('gemini-2.5-flash-preview-tts', {
@@ -400,30 +376,45 @@ async function processSinglePDF(pdfPath, auth, status, idx) {
         slides.push({ imagePath: imagePaths[i], audioPath, script, duration: dur });
         if (i < imagePaths.length - 1) { logStep(`  Jeda ${CONFIG.slideDelay}s...`); await delay(CONFIG.slideDelay * 1000); }
     }
-
     // SEO
     const seo = await generateSEO(allTexts);
     v.seo = seo; writeStatus(status);
-
     // Render
     const outFile = `Narasi_${pdfName}.mp4`, outPath = path.join(OUTPUT_DIR, outFile);
-    try { await renderVideo(slides, outPath); }
+    try {
+        await renderVideo(slides, outPath);
+        // Mixing BGM
+        const bgmPath = path.join(INPUT_DIR, 'bgm.mp3');
+        if (fs.existsSync(bgmPath)) {
+            logStep(`Mixing BGM...`);
+            const vol = parseInt(process.env.BGM_VOLUME) || 15;
+            const mixPath = path.join(TEMP_DIR, `mixed_${outFile}`);
+            const ffmpeg = require('fluent-ffmpeg');
+            await new Promise((resolve, reject) => {
+                ffmpeg()
+                    .input(outPath)
+                    .input(bgmPath).inputOptions(['-stream_loop', '-1'])
+                    .complexFilter([`[1:a]volume=${vol / 100}[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=0[aout]`])
+                    .outputOptions(['-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-movflags', '+faststart'])
+                    .output(mixPath).on('end', resolve).on('error', reject).run();
+            });
+            fs.copyFileSync(mixPath, outPath);
+            fs.unlinkSync(mixPath);
+            logOK('BGM mixed.');
+        }
+    }
     catch (e) { logErr(`Render gagal: ${e.message}`); v.renderStatus = 'error'; writeStatus(status); return; }
-
     v.renderStatus = 'done'; v.outputFile = outFile; status.renderProgress.done++;
     writeStatus(status); gitAutoCommit(`🎬 Rendered: ${pdfName}`);
-
     // Drive upload (immediate)
     if (CONFIG.uploadDrive && auth) {
         try { await uploadToDrive(auth, outPath, outFile); } catch (e) { logErr(`Drive: ${e.message}`); }
     }
-
     // Move PDF
     try { fs.renameSync(pdfPath, path.join(DONE_DIR, path.basename(pdfPath))); logOK('PDF → done/'); } catch (e) { }
     try { fs.rmSync(workDir, { recursive: true, force: true }); } catch (e) { }
     logOK(`Render selesai: ${pdfName}\n`);
 }
-
 // ============================
 //  YOUTUBE UPLOAD PHASE (delayed, anti-bot)
 // ============================
@@ -431,25 +422,20 @@ async function youtubeUploadPhase(auth, status) {
     const baseDelay = CONFIG.ytUploadDelayMin;
     const pending = status.videos.filter(v => v.renderStatus === 'done' && v.ytStatus !== 'uploaded');
     if (!pending.length) { logOK('Tidak ada video untuk upload YT.'); return; }
-
     status.phase = 'uploading_youtube';
     status.ytProgress.total = status.videos.filter(v => v.renderStatus === 'done').length;
     writeStatus(status);
-
     log(`\n${'═'.repeat(60)}\n  ▶️  UPLOAD YOUTUBE — ${pending.length} video\n  Jeda: ~${baseDelay} menit (±10 acak, anti-bot)\n${'═'.repeat(60)}\n`);
-
     for (let i = 0; i < pending.length; i++) {
         const v = pending[i], pdfName = path.basename(v.name, '.pdf');
         const vidPath = path.join(OUTPUT_DIR, v.outputFile || `Narasi_${pdfName}.mp4`);
         if (!fs.existsSync(vidPath)) { logErr(`Video hilang: ${vidPath}`); v.ytStatus = 'error'; writeStatus(status); continue; }
-
         v.ytStatus = 'uploading'; writeStatus(status); gitAutoCommit(`▶️ Uploading: ${pdfName}`);
         try {
             const yt = await uploadToYouTube(auth, vidPath, v.seo, pdfName);
             v.ytStatus = 'uploaded'; v.ytUrl = `https://youtube.com/watch?v=${yt.id}`; v.ytVideoId = yt.id;
             status.ytProgress.done++; writeStatus(status); gitAutoCommit(`✅ YT: ${pdfName}`);
         } catch (e) { logErr(`YT gagal ${pdfName}: ${e.message}`); v.ytStatus = 'error'; writeStatus(status); }
-
         // Random delay anti-bot (base ± 10 menit)
         if (i < pending.length - 1) {
             const rnd = Math.floor(Math.random() * 21) - 10; // -10 to +10
@@ -461,11 +447,9 @@ async function youtubeUploadPhase(auth, status) {
             await delay(actualMin * 60000);
         }
     }
-
     status.phase = 'done'; status.ytProgress.nextUploadAt = '';
     writeStatus(status); gitAutoCommit('🎉 Semua YT upload selesai');
 }
-
 // ============================
 //  MAIN
 // ============================
@@ -473,13 +457,10 @@ async function main() {
     console.log('\n' + '═'.repeat(60));
     console.log('  📹 PDF-to-Video Narrator — CLI Background Processor');
     console.log('═'.repeat(60) + '\n');
-
     if (process.argv.includes('--setup')) { await setupPoppler(); process.exit(0); }
     if (process.argv.includes('--auth')) { await authenticateGoogle(); process.exit(0); }
-
     const renderOnly = process.argv.includes('--render-only');
     const uploadYTOnly = process.argv.includes('--upload-youtube');
-
     // Mode: upload-youtube only
     if (uploadYTOnly) {
         log('Mode: Upload YouTube (jeda anti-bot)');
@@ -489,30 +470,24 @@ async function main() {
         logOK('Upload YouTube selesai!');
         process.exit(0);
     }
-
     if (!CONFIG.geminiKeys.length) { logErr('Isi GEMINI_KEY_1 di .env!'); process.exit(1); }
     if (!findPdftoppm()) {
         logWarn('Poppler belum ada. Download otomatis...');
         if (!(await setupPoppler())) { logErr('Jalankan --setup'); process.exit(1); }
     }
-
     ensureDirs();
     log(`Config: Style=${CONFIG.narrationStyle} Voice=${CONFIG.narratorVoice} Delay=${CONFIG.slideDelay}s Keys=${CONFIG.geminiKeys.length}`);
     log(`Upload: Drive=${CONFIG.uploadDrive} YT=${renderOnly ? 'SKIP' : CONFIG.uploadYoutube} Privacy=${CONFIG.youtubePrivacy}`);
-
     let auth = null;
     if ((CONFIG.uploadDrive || CONFIG.uploadYoutube) && !renderOnly) {
         auth = await getOAuth2Client();
         if (auth) logOK('Google OAuth OK.');
         else logWarn('Tanpa Google auth. Upload dinonaktifkan.');
     }
-
     const pdfFiles = fs.readdirSync(INPUT_DIR).filter(f => f.toLowerCase().endsWith('.pdf')).map(f => path.join(INPUT_DIR, f));
     if (!pdfFiles.length) { log('Tidak ada PDF di input/'); process.exit(0); }
-
     const total = pdfFiles.length;
     log(`\n📋 ${total} PDF ditemukan.\n`);
-
     // Init status
     const status = readStatus();
     status.phase = 'rendering';
@@ -520,7 +495,6 @@ async function main() {
     status.ytProgress = { done: 0, total, nextUploadAt: '' };
     status.videos = pdfFiles.map(f => ({ name: path.basename(f), renderStatus: 'pending', ytStatus: 'pending', ytUrl: null, seo: null, outputFile: null }));
     writeStatus(status); gitAutoCommit(`🚀 Start: ${total} PDF`);
-
     // Phase 1: Render
     for (let i = 0; i < pdfFiles.length; i++) {
         log(`[${i + 1}/${total}]`);
@@ -529,7 +503,6 @@ async function main() {
     }
     try { fs.rmSync(TEMP_DIR, { recursive: true, force: true }); } catch (e) { }
     logOK(`Render selesai: ${status.renderProgress.done}/${total}`);
-
     // Phase 2: YouTube upload (delayed)
     if (!renderOnly && CONFIG.uploadYoutube && auth) {
         await youtubeUploadPhase(auth, status);
@@ -537,10 +510,8 @@ async function main() {
         status.phase = 'rendered'; writeStatus(status); gitAutoCommit('🎬 Render done (render-only)');
         log('Untuk upload YT: node process.js --upload-youtube');
     }
-
     console.log('\n' + '═'.repeat(60));
     logOK('Selesai!');
     console.log('═'.repeat(60) + '\n');
 }
-
 main().catch(e => { logErr(e.message); process.exit(1); });
