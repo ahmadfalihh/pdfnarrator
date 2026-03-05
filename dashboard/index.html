@@ -5,441 +5,944 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDF-to-Video Narrator — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #030712; --surface: #0f172a; --surface2: #1e293b; --surface3: #334155;
-      --border: #1e293b; --border2: #334155;
-      --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
-      --indigo: #6366f1; --indigo-glow: rgba(99,102,241,.15);
-      --emerald: #10b981; --emerald-glow: rgba(16,185,129,.15);
-      --red: #ef4444; --red-glow: rgba(239,68,68,.12);
-      --amber: #f59e0b;
-      --radius: 12px; --radius-sm: 8px;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
+    :root {
+      --bg: #030712;
+      --surface: #0f172a;
+      --surface2: #1e293b;
+      --surface3: #334155;
+      --border: #1e293b;
+      --border2: #334155;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --indigo: #6366f1;
+      --indigo-glow: rgba(99, 102, 241, .15);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, .15);
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, .12);
+      --amber: #f59e0b;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
     /* === LAYOUT === */
-    .app { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
-    header .logo { display: flex; align-items: center; gap: 12px; }
-    header .logo-icon { width: 44px; height: 44px; background: linear-gradient(135deg, var(--indigo), #a855f7); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    header h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
-    header h1 span { color: var(--indigo); }
-    header .subtitle { font-size: 0.75rem; color: var(--text3); }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
-
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--indigo), #a855f7);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    header h1 span {
+      color: var(--indigo);
+    }
+    header .subtitle {
+      font-size: 0.75rem;
+      color: var(--text3);
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
     /* === CARDS === */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: relative; overflow: hidden; }
-    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(99,102,241,.3), transparent); }
-    .card-title { font-size: 0.85rem; font-weight: 600; color: var(--text2); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .card-title .icon { font-size: 1.1rem; }
-
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, .3), transparent);
+    }
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: space-between;
+    }
+    .card-title .icon {
+      font-size: 1.1rem;
+    }
     /* === LOGIN === */
-    #loginPanel { max-width: 480px; margin: 120px auto; }
-    #loginPanel h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; text-align: center; }
-    #loginPanel p { color: var(--text3); font-size: 0.8rem; text-align: center; margin-bottom: 24px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
-    input[type="text"], input[type="password"], input[type="number"], select {
-      width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border2);
-      border-radius: var(--radius-sm); color: var(--text); font-size: 0.85rem; font-family: inherit;
+    #loginPanel {
+      max-width: 480px;
+      margin: 120px auto;
+    }
+    #loginPanel h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    #loginPanel p {
+      color: var(--text3);
+      font-size: 0.8rem;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
       transition: border-color .2s;
     }
-    input:focus, select:focus { outline: none; border-color: var(--indigo); }
-    .btn { padding: 10px 20px; border: none; border-radius: var(--radius-sm); font-family: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-primary { background: var(--indigo); color: #fff; }
-    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
-    .btn-danger { background: var(--red); color: #fff; }
-    .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
-    .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
-    .btn-outline:hover { border-color: var(--text2); color: var(--text); }
-    .btn:disabled { opacity: .5; cursor: not-allowed; }
-
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--indigo);
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: var(--indigo);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+    .btn-danger {
+      background: var(--red);
+      color: #fff;
+    }
+    .btn-success {
+      background: var(--emerald);
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #059669;
+    }
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.75rem;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+    .btn-outline:hover {
+      border-color: var(--text2);
+      color: var(--text);
+    }
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
     /* === GRID === */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
-
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
     /* === PROGRESS === */
-    .stat-number { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
-    .stat-label { font-size: 0.75rem; color: var(--text3); margin-top: 4px; }
-    .progress-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-top: 12px; }
-    .progress-bar .fill { height: 100%; border-radius: 999px; transition: width .5s ease; }
-    .fill-indigo { background: linear-gradient(90deg, var(--indigo), #a855f7); }
-    .fill-emerald { background: linear-gradient(90deg, var(--emerald), #34d399); }
-    .fill-red { background: linear-gradient(90deg, var(--red), #f87171); }
-    .pct-text { font-size: 0.7rem; color: var(--text3); margin-top: 4px; text-align: right; }
-    .countdown { font-size: 0.8rem; color: var(--amber); margin-top: 8px; font-weight: 600; }
-
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width .5s ease;
+    }
+    .fill-indigo {
+      background: linear-gradient(90deg, var(--indigo), #a855f7);
+    }
+    .fill-emerald {
+      background: linear-gradient(90deg, var(--emerald), #34d399);
+    }
+    .fill-red {
+      background: linear-gradient(90deg, var(--red), #f87171);
+    }
+    .pct-text {
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-top: 4px;
+      text-align: right;
+    }
+    .countdown {
+      font-size: 0.8rem;
+      color: var(--amber);
+      margin-top: 8px;
+      font-weight: 600;
+    }
     /* === UPLOAD ZONE === */
-    .upload-zone { border: 2px dashed var(--border2); border-radius: var(--radius); padding: 40px; text-align: center; cursor: pointer; transition: all .2s; margin-bottom: 24px; }
-    .upload-zone:hover, .upload-zone.dragover { border-color: var(--indigo); background: var(--indigo-glow); }
-    .upload-zone .icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .upload-zone h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
-    .upload-zone p { font-size: 0.8rem; color: var(--text3); }
-
+    .upload-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .upload-zone:hover,
+    .upload-zone.dragover {
+      border-color: var(--indigo);
+      background: var(--indigo-glow);
+    }
+    .upload-zone .icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .upload-zone h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .upload-zone p {
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+    .bgm-zone {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border2);
+      text-align: center;
+    }
+    .bgm-zone h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text2);
+    }
+    .bgm-zone p {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
     /* === FILE LIST === */
-    .file-list { max-height: 400px; overflow-y: auto; }
-    .file-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 0.8rem; }
-    .file-item .name { font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 12px; }
-    .badge { padding: 3px 10px; border-radius: 999px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
-    .badge-pending { background: var(--surface2); color: var(--text3); }
-    .badge-rendering { background: var(--indigo-glow); color: var(--indigo); border: 1px solid rgba(99,102,241,.3); animation: pulse-badge 2s infinite; }
-    .badge-rendered { background: var(--emerald-glow); color: var(--emerald); }
-    .badge-uploading { background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.3); animation: pulse-badge 2s infinite; }
-    .badge-uploaded { background: var(--emerald-glow); color: var(--emerald); }
-    .badge-error { background: var(--red-glow); color: var(--red); }
-    .yt-link { color: var(--red); text-decoration: none; font-weight: 600; font-size: 0.7rem; }
-    .yt-link:hover { text-decoration: underline; }
-    @keyframes pulse-badge { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
-
-    /* === SETTINGS === */
-    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
-
-    /* === CONNECTION DOT === */
-    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-    .dot-green { background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
-    .dot-red { background: var(--red); }
-    .dot-yellow { background: var(--amber); animation: pulse-badge 1.5s infinite; }
-
-    /* SCROLLBAR */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 999px; }
-
-    /* TOAST */
-    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface2); border: 1px solid var(--border2); padding: 12px 20px; border-radius: var(--radius-sm); font-size: 0.8rem; z-index: 999; animation: slideIn .3s ease; }
-    @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    .hidden { display: none !important; }
+    .file-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+    }
+    .file-item .name {
+      font-weight: 500;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 12px;
+    }
+    .badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .badge-pending {
+      background: var(--surface2);
+      color: var(--text3);
+    }
+    .badge-rendering {
+      background: var(--indigo-glow);
+      color: var(--indigo);
+      border: 1px solid rgba(99, 102, 241, .3);
+      animation: pulse-badge 2s infinite;
+    }
+    .badge-rendered {
+      background: var(--emerald-glow);
+      color: var(--emerald);
+    }
+    .badge-uploading {
+      background: rgba(245, 158, 11, .12);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, .3);
+      animation: pulse-badge 2s infinite;
+    }
+    .badge-uploaded {
+      background: var(--emerald-glow);
+      color: var(--emerald);
+    }
+    .badge-error {
+      background: var(--red-glow);
+      color: var(--red);
+    }
+    .yt-link {
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+    .yt-link:hover {
+      text-decoration: underline;
+    }
+    @keyframes pulse-badge {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: .6;
+      }
+    }
+    /* === SLIDER === */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: var(--indigo);
+      cursor: pointer;
+      margin-top: -6px;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: var(--border2);
+      border-radius: 4px;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    /* === DOTS & TOAST === */
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .dot-green {
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+    }
+    .dot-red {
+      background: var(--red);
+    }
+    .dot-yellow {
+      background: var(--amber);
+      animation: pulse-badge 1.5s infinite;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface3);
+      border-radius: 999px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      z-index: 999;
+      animation: slideIn .3s ease;
+      max-width: 350px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .hidden {
+      display: none !important;
+    }
+    /* LOADING OVERLAY */
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #loadingOverlay.hidden {
+      display: none;
+    }
+    .spinner {
+      border: 4px solid var(--surface3);
+      border-top: 4px solid var(--indigo);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
 <body>
-
-<div class="app">
-  <!-- ===== LOGIN PANEL ===== -->
-  <div id="loginPanel" class="card">
-    <h2>🎬 PDF-to-Video Dashboard</h2>
-    <p>Hubungkan ke GitHub Repository untuk mulai memproses PDF menjadi video narasi AI.</p>
-    <div class="form-group">
-      <label>GitHub Personal Access Token</label>
-      <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-    </div>
-    <div class="form-group">
-      <label>Repository (format: owner/repo)</label>
-      <input type="text" id="ghRepo" placeholder="username/pdf-narrator">
-    </div>
-    <div class="form-group">
-      <label>Branch</label>
-      <input type="text" id="ghBranch" value="main" placeholder="main">
-    </div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="connectGitHub()">
-      🔗 Hubungkan ke GitHub
-    </button>
-    <p style="margin-top:16px;font-size:.7rem;color:var(--text3);">Token memerlukan scope: <code>repo</code> dan <code>workflow</code>. Buat di <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--indigo);">GitHub Settings → Tokens</a>.</p>
+  <div id="loadingOverlay" class="hidden">
+    <div class="spinner"></div>
+    <h3 id="loadingText" style="color:white; font-size:1.1rem">Mengunggah file...</h3>
+    <p id="loadingSubtext" style="color:var(--text3); font-size:0.85rem; margin-top:8px">Mohon tunggu, jangan tutup tab
+      ini.</p>
   </div>
-
-  <!-- ===== DASHBOARD ===== -->
-  <div id="dashboard" class="hidden">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">🎬</div>
-        <div>
-          <h1>PDF-to-Video <span>Pro</span></h1>
-          <div class="subtitle"><span class="dot dot-green" id="connDot"></span> <span id="repoName">-</span></div>
+  <div class="app">
+    <!-- ===== LOGIN PANEL ===== -->
+    <div id="loginPanel" class="card">
+      <h2>🎬 PDF-to-Video Dashboard</h2>
+      <p>Hubungkan ke GitHub Repository untuk mulai memproses PDF menjadi video narasi AI.</p>
+      <div class="form-group">
+        <label>GitHub Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      </div>
+      <div class="form-group">
+        <label>Repository (format: owner/repo)</label>
+        <input type="text" id="ghRepo" placeholder="username/pdf-narrator">
+      </div>
+      <div class="form-group">
+        <label>Branch</label>
+        <input type="text" id="ghBranch" value="main" placeholder="main">
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="connectGitHub()">
+        🔗 Hubungkan ke GitHub
+      </button>
+    </div>
+    <!-- ===== DASHBOARD ===== -->
+    <div id="dashboard" class="hidden">
+      <header>
+        <div class="logo">
+          <div class="logo-icon">🎬</div>
+          <div>
+            <h1>PDF-to-Video <span>Pro</span></h1>
+            <div class="subtitle"><span class="dot dot-green" id="connDot"></span> <span id="repoName">-</span></div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-sm btn-outline" onclick="triggerWorkflow()">🚀 Trigger Process</button>
+          <button class="btn btn-sm btn-outline" onclick="loadSettings()">🔄 Refresh Vars</button>
+          <button class="btn btn-sm btn-outline" onclick="logout()">⏏ Logout</button>
+        </div>
+      </header>
+      <!-- STATS -->
+      <div class="grid-2">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title"><span class="icon">🎬</span> Video Rendering Queue</div>
+          <div class="stat-number" id="renderStat">0/0</div>
+          <div class="stat-label">video dirender</div>
+          <div class="progress-bar">
+            <div class="fill fill-indigo" id="renderBar" style="width:0%"></div>
+          </div>
+          <div class="pct-text" id="renderPct">0%</div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title"><span class="icon">▶️</span> YouTube Upload Queue</div>
+          <div class="stat-number" id="ytStat">0/0</div>
+          <div class="stat-label">video diunggah</div>
+          <div class="progress-bar">
+            <div class="fill fill-emerald" id="ytBar" style="width:0%"></div>
+          </div>
+          <div class="pct-text" id="ytPct">0%</div>
+          <div class="countdown hidden" id="ytCountdown">⏱ Upload berikutnya dalam: --:--</div>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn btn-sm btn-outline" onclick="triggerWorkflow()">🚀 Trigger Process</button>
-        <button class="btn btn-sm btn-outline" onclick="refreshStatus()">🔄 Refresh</button>
-        <button class="btn btn-sm btn-outline" onclick="logout()">⏏ Logout</button>
-      </div>
-    </header>
-
-    <!-- STATS -->
-    <div class="grid-2">
+      <!-- UPLOAD ZONE -->
       <div class="card">
-        <div class="card-title"><span class="icon">🎬</span> Video Rendering Queue</div>
-        <div class="stat-number" id="renderStat">0/0</div>
-        <div class="stat-label">video dirender</div>
-        <div class="progress-bar"><div class="fill fill-indigo" id="renderBar" style="width:0%"></div></div>
-        <div class="pct-text" id="renderPct">0%</div>
+        <div class="upload-zone" id="uploadZone" ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+          <div class="icon">📄</div>
+          <h3>Upload PDF ke GitHub</h3>
+          <p>File PDF berapapun besarnya akan diunggah via Git Blob API agar tidak stagnan.</p>
+          <input type="file" id="fileInput" accept=".pdf" multiple style="display:none"
+            onchange="handlePDFUpload(this.files)">
+          <button class="btn btn-primary" style="margin-top:16px"
+            onclick="document.getElementById('fileInput').click()">📁 Pilih File PDF</button>
+        </div>
+        <div class="bgm-zone">
+          <h4>🎵 Upload Background Music (Opsional)</h4>
+          <p>Musik akan diputar dengan volume sesuai dengan pengaturan BGM di bawah.</p>
+          <input type="file" id="bgmInput" accept="audio/mpeg,audio/mp3" style="display:none"
+            onchange="handleBGMUpload(this.files[0])">
+          <button class="btn btn-sm btn-outline" onclick="document.getElementById('bgmInput').click()">Pilih Audio
+            MP3</button>
+        </div>
       </div>
+      <!-- FILE LIST -->
       <div class="card">
-        <div class="card-title"><span class="icon">▶️</span> YouTube Upload Queue</div>
-        <div class="stat-number" id="ytStat">0/0</div>
-        <div class="stat-label">video diunggah</div>
-        <div class="progress-bar"><div class="fill fill-emerald" id="ytBar" style="width:0%"></div></div>
-        <div class="pct-text" id="ytPct">0%</div>
-        <div class="countdown hidden" id="ytCountdown">⏱ Upload berikutnya dalam: --:--</div>
+        <div class="card-title">
+          <div><span class="icon">📋</span> Status Per File</div>
+          <button class="btn btn-sm btn-outline" onclick="refreshStatus()"
+            style="font-size:0.65rem;padding:4px 8px">Refresh</button>
+        </div>
+        <div class="file-list" id="fileList">
+          <div style="text-align:center;padding:32px;color:var(--text3);font-size:.85rem;">Belum ada data. Upload PDF
+            atau tunggu status terbaru.</div>
+        </div>
       </div>
-    </div>
-
-    <!-- UPLOAD ZONE -->
-    <div class="upload-zone" id="uploadZone" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
-      <div class="icon">📄</div>
-      <h3>Upload PDF ke GitHub</h3>
-      <p>Drag & drop file PDF atau klik untuk memilih. File akan di-push ke repo dan GitHub Actions akan otomatis jalan.</p>
-      <input type="file" id="fileInput" accept=".pdf" multiple style="display:none" onchange="handleFiles(this.files)">
-      <button class="btn btn-primary" style="margin-top:16px" onclick="document.getElementById('fileInput').click()">📁 Pilih File PDF</button>
-    </div>
-
-    <!-- FILE LIST -->
-    <div class="card" style="margin-bottom:24px;">
-      <div class="card-title"><span class="icon">📋</span> Status Per File</div>
-      <div class="file-list" id="fileList">
-        <div style="text-align:center;padding:32px;color:var(--text3);font-size:.85rem;">Belum ada data. Upload PDF atau tunggu status terbaru.</div>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div class="card">
-      <div class="card-title"><span class="icon">⚙️</span> Pengaturan (GitHub Variables)</div>
-      <div class="settings-grid">
-        <div class="form-group">
-          <label>Gaya Narasi</label>
-          <select id="setStyle">
-            <option>Profesional & Formal</option><option>Santai & Kasual</option>
-            <option>Edukatif & Informatif</option><option>Inspiratif & Memotivasi</option>
-            <option>Dramatis & Epik</option><option>Storytelling (Mendongeng)</option>
-            <option>Gaya Pembaca Berita</option>
-          </select>
+      <!-- SETTINGS -->
+      <div class="card">
+        <div class="card-title">
+          <div><span class="icon">⚙️</span> Pengaturan Cerdas (GitHub Actions Vars)</div>
         </div>
-        <div class="form-group">
-          <label>Suara Narator</label>
-          <select id="setVoice">
-            <option value="Zephyr">Zephyr (Tegas/Pria)</option><option value="Aoede">Aoede (Netral/Wanita)</option>
-            <option value="Puck">Puck (Ceria/Pria)</option><option value="Charon">Charon (Berat/Pria)</option>
-            <option value="Kore">Kore (Lembut/Wanita)</option><option value="Fenrir">Fenrir (Kuat/Pria)</option>
-            <option value="Orus">Orus (Wibawa/Pria)</option>
-          </select>
+        <div class="settings-grid">
+          <div class="form-group">
+            <label>Gaya Narasi AI</label>
+            <select id="var_NARRATION_STYLE">
+              <option>Profesional & Formal</option>
+              <option>Humoris santai tapi tetap sopan seperti teman</option>
+              <option>Santai & Kasual</option>
+              <option>Edukatif & Informatif</option>
+              <option>Inspiratif & Memotivasi</option>
+              <option>Dramatis & Epik</option>
+              <option>Storytelling (Mendongeng)</option>
+              <option>Gaya Pembaca Berita</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Suara Narator</label>
+            <select id="var_NARRATOR_VOICE">
+              <option value="Zephyr">Zephyr (Tegas/Pria)</option>
+              <option value="Aoede">Aoede (Netral/Wanita)</option>
+              <option value="Puck">Puck (Ceria/Pria)</option>
+              <option value="Charon">Charon (Berat/Pria)</option>
+              <option value="Kore">Kore (Lembut/Wanita)</option>
+              <option value="Fenrir">Fenrir (Kuat/Pria)</option>
+              <option value="Orus">Orus (Wibawa/Pria)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Volume BGM: <span id="bgmVolLabel" style="color:var(--indigo);font-weight:700">15</span>%</label>
+            <input type="range" id="var_BGM_VOLUME" min="0" max="100" value="15"
+              oninput="document.getElementById('bgmVolLabel').textContent=this.value">
+          </div>
+          <div class="form-group" style="display:flex;gap:12px">
+            <div style="flex:1">
+              <label>Jeda Antar Slide (detik)</label>
+              <input type="number" id="var_SLIDE_DELAY" value="10" min="5" max="60">
+            </div>
+            <div style="flex:1">
+              <label>Jeda Upload YT (menit)</label>
+              <input type="number" id="var_YT_UPLOAD_DELAY_MINUTES" value="60" min="10" max="180">
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Jeda Antar Slide (detik)</label>
-          <input type="number" id="setDelay" value="10" min="5" max="60">
-        </div>
-        <div class="form-group">
-          <label>Jeda Upload YouTube (menit, rata-rata)</label>
-          <input type="number" id="setYtDelay" value="60" min="10" max="180">
-        </div>
+        <button class="btn btn-success" style="width:100%;margin-top:16px" onclick="saveSettings()">💾 Simpan Pengaturan
+          ke GitHub</button>
+        <p style="font-size:0.75rem;color:var(--text3);margin-top:8px;text-align:center">Perubahan pengaturan akan
+          berefek pada render/upload berikutnya.</p>
       </div>
     </div>
   </div>
-</div>
-
-<div class="toast hidden" id="toast"></div>
-
-<script>
-// ===== STATE =====
-let GH = { token: '', repo: '', branch: 'main' };
-let pollInterval = null;
-
-// ===== PERSISTENCE =====
-function saveGH() { localStorage.setItem('gh_config', JSON.stringify(GH)); }
-function loadGH() {
-  const s = localStorage.getItem('gh_config');
-  if (s) { GH = JSON.parse(s); return true; }
-  return false;
-}
-
-// ===== TOAST =====
-function showToast(msg, ms = 3000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.remove('hidden');
-  setTimeout(() => t.classList.add('hidden'), ms);
-}
-
-// ===== CONNECT =====
-function connectGitHub() {
-  const token = document.getElementById('ghToken').value.trim();
-  const repo = document.getElementById('ghRepo').value.trim();
-  const branch = document.getElementById('ghBranch').value.trim() || 'main';
-  if (!token || !repo) return alert('Isi Token dan Repo.');
-  GH = { token, repo, branch };
-  saveGH();
-  enterDashboard();
-}
-
-function enterDashboard() {
-  document.getElementById('loginPanel').classList.add('hidden');
-  document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('repoName').textContent = GH.repo;
-  refreshStatus();
-  if (pollInterval) clearInterval(pollInterval);
-  pollInterval = setInterval(refreshStatus, 30000);
-}
-
-function logout() {
-  localStorage.removeItem('gh_config');
-  GH = { token: '', repo: '', branch: 'main' };
-  if (pollInterval) clearInterval(pollInterval);
-  document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('loginPanel').classList.remove('hidden');
-}
-
-// Auto-login
-if (loadGH() && GH.token) { enterDashboard(); }
-
-// ===== GITHUB API HELPERS =====
-async function ghFetch(endpoint, opts = {}) {
-  const url = endpoint.startsWith('http') ? endpoint : `https://api.github.com/repos/${GH.repo}${endpoint}`;
-  const res = await fetch(url, {
-    ...opts,
-    headers: { 'Authorization': `token ${GH.token}`, 'Accept': 'application/vnd.github.v3+json', ...(opts.headers || {}) }
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`GitHub API Error ${res.status}: ${err.substring(0, 200)}`);
-  }
-  return res.status === 204 ? null : res.json();
-}
-
-// ===== REFRESH STATUS =====
-async function refreshStatus() {
-  try {
-    const data = await ghFetch(`/contents/status.json?ref=${GH.branch}`);
-    const json = JSON.parse(atob(data.content));
-    updateDashboard(json);
-    document.getElementById('connDot').className = 'dot dot-green';
-  } catch (e) {
-    console.warn('Status fetch error:', e.message);
-    document.getElementById('connDot').className = 'dot dot-yellow';
-    // If status.json doesn't exist, show empty state
-    updateDashboard({ phase: 'idle', videos: [], renderProgress: { done: 0, total: 0 }, ytProgress: { done: 0, total: 0, nextUploadAt: '' } });
-  }
-}
-
-function updateDashboard(status) {
-  const rp = status.renderProgress || { done: 0, total: 0 };
-  const yp = status.ytProgress || { done: 0, total: 0, nextUploadAt: '' };
-  const rPct = rp.total > 0 ? Math.round((rp.done / rp.total) * 100) : 0;
-  const yPct = yp.total > 0 ? Math.round((yp.done / yp.total) * 100) : 0;
-
-  document.getElementById('renderStat').textContent = `${rp.done}/${rp.total}`;
-  document.getElementById('renderBar').style.width = rPct + '%';
-  document.getElementById('renderPct').textContent = rPct + '%';
-
-  document.getElementById('ytStat').textContent = `${yp.done}/${yp.total}`;
-  document.getElementById('ytBar').style.width = yPct + '%';
-  document.getElementById('ytPct').textContent = yPct + '%';
-
-  // Countdown
-  const cdEl = document.getElementById('ytCountdown');
-  if (yp.nextUploadAt) {
-    cdEl.classList.remove('hidden');
-    updateCountdown(yp.nextUploadAt);
-  } else {
-    cdEl.classList.add('hidden');
-  }
-
-  // File list
-  const list = document.getElementById('fileList');
-  if (!status.videos || status.videos.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:.85rem;">Belum ada data.</div>';
-    return;
-  }
-
-  list.innerHTML = status.videos.map(v => {
-    const renderBadge = v.renderStatus === 'done' ? 'badge-rendered' :
-                        v.renderStatus === 'rendering' ? 'badge-rendering' :
-                        v.renderStatus === 'error' ? 'badge-error' : 'badge-pending';
-    const ytBadge = v.ytStatus === 'uploaded' ? 'badge-uploaded' :
-                    v.ytStatus === 'uploading' ? 'badge-uploading' :
-                    v.ytStatus === 'error' ? 'badge-error' : 'badge-pending';
-    const ytLink = v.ytUrl ? `<a class="yt-link" href="${v.ytUrl}" target="_blank">▶ Watch</a>` : '';
-
-    return `<div class="file-item">
+  <div class="toast hidden" id="toast"></div>
+  <script>
+    // ===== STATE =====
+    let GH = { token: '', repo: '', branch: 'main' };
+    let pollInterval = null;
+    // ===== PERSISTENCE =====
+    function saveGH() { localStorage.setItem('gh_config', JSON.stringify(GH)); }
+    function loadGH() {
+      const s = localStorage.getItem('gh_config');
+      if (s) { GH = JSON.parse(s); return true; }
+      return false;
+    }
+    // ===== UTILS =====
+    function showToast(msg, ms = 4000) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), ms);
+    }
+    function showLoading(text) {
+      document.getElementById('loadingText').textContent = text;
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+    }
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+    // ===== CONNECT =====
+    function connectGitHub() {
+      const token = document.getElementById('ghToken').value.trim();
+      const repo = document.getElementById('ghRepo').value.trim();
+      const branch = document.getElementById('ghBranch').value.trim() || 'main';
+      if (!token || !repo) return alert('Isi Token dan Repo.');
+      GH = { token, repo, branch };
+      saveGH();
+      enterDashboard();
+    }
+    function enterDashboard() {
+      document.getElementById('loginPanel').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('repoName').textContent = GH.repo;
+      refreshStatus();
+      loadSettings();
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(refreshStatus, 30000);
+    }
+    function logout() {
+      localStorage.removeItem('gh_config');
+      GH = { token: '', repo: '', branch: 'main' };
+      if (pollInterval) clearInterval(pollInterval);
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('loginPanel').classList.remove('hidden');
+    }
+    if (loadGH() && GH.token) { enterDashboard(); }
+    // ===== GITHUB API HELPERS =====
+    async function ghFetch(endpoint, opts = {}) {
+      const url = endpoint.startsWith('http') ? endpoint : `https://api.github.com/repos/${GH.repo}${endpoint}`;
+      const res = await fetch(url, {
+        ...opts,
+        headers: { 'Authorization': `token ${GH.token}`, 'Accept': 'application/vnd.github.v3+json', ...(opts.headers || {}) }
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`GitHub API Error ${res.status}: ${err.substring(0, 200)}`);
+      }
+      return res.status === 204 ? null : res.json();
+    }
+    // ==== GIT BLOB UPLOAD API (Untuk file besar > 20MB) ====
+    async function ghUploadBlob(fileObj, repoPath, commitMsg) {
+      try {
+        const b64 = await fileToBase64(fileObj);
+        // 1. Dapatkan ref dari branch utama
+        const refData = await ghFetch(`/git/refs/heads/${GH.branch}`);
+        const commitSha = refData.object.sha;
+        // 2. Buat Blob (Data file itu sendiri)
+        const blobData = await ghFetch(`/git/blobs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: b64, encoding: 'base64' })
+        });
+        // 3. Ambil base tree dari commit terakhir
+        const commitData = await ghFetch(`/git/commits/${commitSha}`);
+        const baseTreeSha = commitData.tree.sha;
+        // 4. Buat Tree baru dengan file yang ditambahkan/diupdate
+        const treeData = await ghFetch(`/git/trees`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            base_tree: baseTreeSha,
+            tree: [{ path: repoPath, mode: '100644', type: 'blob', sha: blobData.sha }]
+          })
+        });
+        // 5. Buat Commit
+        const newCommit = await ghFetch(`/git/commits`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: commitMsg,
+            tree: treeData.sha,
+            parents: [commitSha]
+          })
+        });
+        // 6. Update Reference (Memajukan branch main ke commit baru)
+        await ghFetch(`/git/refs/heads/${GH.branch}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sha: newCommit.sha, force: false })
+        });
+        return true;
+      } catch (err) {
+        throw err;
+      }
+    }
+    // ===== REFRESH STATUS =====
+    async function refreshStatus() {
+      try {
+        const data = await ghFetch(`/contents/status.json?ref=${GH.branch}`);
+        const json = JSON.parse(atob(data.content));
+        updateDashboard(json);
+        document.getElementById('connDot').className = 'dot dot-green';
+      } catch (e) {
+        document.getElementById('connDot').className = 'dot dot-yellow';
+        updateDashboard({ phase: 'idle', videos: [], renderProgress: { done: 0, total: 0 }, ytProgress: { done: 0, total: 0, nextUploadAt: '' } });
+      }
+    }
+    function updateDashboard(status) {
+      const rp = status.renderProgress || { done: 0, total: 0 };
+      const yp = status.ytProgress || { done: 0, total: 0, nextUploadAt: '' };
+      const rPct = rp.total > 0 ? Math.round((rp.done / rp.total) * 100) : 0;
+      const yPct = yp.total > 0 ? Math.round((yp.done / yp.total) * 100) : 0;
+      document.getElementById('renderStat').textContent = `${rp.done}/${rp.total}`;
+      document.getElementById('renderBar').style.width = rPct + '%';
+      document.getElementById('renderPct').textContent = rPct + '%';
+      document.getElementById('ytStat').textContent = `${yp.done}/${yp.total}`;
+      document.getElementById('ytBar').style.width = yPct + '%';
+      document.getElementById('ytPct').textContent = yPct + '%';
+      const cdEl = document.getElementById('ytCountdown');
+      if (yp.nextUploadAt) { cdEl.classList.remove('hidden'); updateCountdown(yp.nextUploadAt); }
+      else { cdEl.classList.add('hidden'); }
+      const list = document.getElementById('fileList');
+      if (!status.videos || status.videos.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:.85rem;">Belum ada data.</div>';
+        return;
+      }
+      list.innerHTML = status.videos.map(v => {
+        const renderBadge = v.renderStatus === 'done' ? 'badge-rendered' :
+          v.renderStatus === 'rendering' ? 'badge-rendering' :
+            v.renderStatus === 'error' ? 'badge-error' : 'badge-pending';
+        const ytBadge = v.ytStatus === 'uploaded' ? 'badge-uploaded' :
+          v.ytStatus === 'uploading' ? 'badge-uploading' :
+            v.ytStatus === 'error' ? 'badge-error' : 'badge-pending';
+        const ytLink = v.ytUrl ? `<a class="yt-link" href="${v.ytUrl}" target="_blank">▶ Watch</a>` : '';
+        return `<div class="file-item">
       <span class="name">📄 ${v.name}</span>
       <span class="badge ${renderBadge}">${v.renderStatus || 'pending'}</span>
       <span class="badge ${ytBadge}" style="margin-left:4px">${v.ytStatus || 'pending'}</span>
       ${ytLink}
     </div>`;
-  }).join('');
-}
-
-function updateCountdown(targetISO) {
-  const el = document.getElementById('ytCountdown');
-  const target = new Date(targetISO).getTime();
-  const update = () => {
-    const diff = target - Date.now();
-    if (diff <= 0) { el.textContent = '⏱ Upload sedang berlangsung...'; return; }
-    const m = Math.floor(diff / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    el.textContent = `⏱ Upload berikutnya dalam: ${m}m ${s}s`;
-  };
-  update();
-  // Re-run every second for countdown
-  if (window._cdInterval) clearInterval(window._cdInterval);
-  window._cdInterval = setInterval(update, 1000);
-}
-
-// ===== UPLOAD PDF =====
-function handleDrop(e) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('dragover');
-  if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
-}
-
-async function handleFiles(files) {
-  const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
-  if (pdfs.length === 0) return alert('Pilih file PDF.');
-
-  for (const file of pdfs) {
-    showToast(`📤 Mengunggah ${file.name}...`, 5000);
-    try {
-      const base64 = await fileToBase64(file);
-      // Check if file exists
-      let sha = undefined;
-      try {
-        const existing = await ghFetch(`/contents/input/${file.name}?ref=${GH.branch}`);
-        sha = existing.sha;
-      } catch (e) {}
-
-      const body = {
-        message: `📄 Upload: ${file.name}`,
-        content: base64,
-        branch: GH.branch,
-      };
-      if (sha) body.sha = sha;
-
-      await ghFetch(`/contents/input/${file.name}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      showToast(`✅ ${file.name} berhasil diunggah!`, 3000);
-    } catch (e) {
-      showToast(`❌ Gagal upload ${file.name}: ${e.message}`, 5000);
+      }).join('');
     }
-  }
-  showToast('🚀 Semua file diunggah. GitHub Actions akan otomatis jalan.', 4000);
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// ===== TRIGGER WORKFLOW =====
-async function triggerWorkflow() {
-  try {
-    showToast('🔄 Triggering GitHub Actions...', 3000);
-    await ghFetch(`/actions/workflows/process-pdf.yml/dispatches`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ref: GH.branch })
-    });
-    showToast('✅ Workflow dipicu! Cek tab Actions di GitHub.', 4000);
-  } catch (e) {
-    showToast(`❌ Gagal trigger: ${e.message}`, 5000);
-  }
-}
-</script>
+    function updateCountdown(targetISO) {
+      const el = document.getElementById('ytCountdown');
+      const target = new Date(targetISO).getTime();
+      const update = () => {
+        const diff = target - Date.now();
+        if (diff <= 0) { el.textContent = '⏱ Upload sedang berlangsung...'; return; }
+        const m = Math.floor(diff / 60000); const s = Math.floor((diff % 60000) / 1000);
+        el.textContent = `⏱ Upload berikutnya dalam: ${m}m ${s}s`;
+      };
+      update();
+      if (window._cdInterval) clearInterval(window._cdInterval);
+      window._cdInterval = setInterval(update, 1000);
+    }
+    // ===== UPLOAD SYSTEM =====
+    function handleDrop(e) {
+      e.preventDefault(); e.currentTarget.classList.remove('dragover');
+      if (e.dataTransfer.files) handlePDFUpload(e.dataTransfer.files);
+    }
+    async function handlePDFUpload(files) {
+      const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+      if (pdfs.length === 0) return alert('Pilih file PDF.');
+      showLoading(`Mengunggah 0/${pdfs.length} PDF...`);
+      let successCount = 0;
+      for (let i = 0; i < pdfs.length; i++) {
+        const file = pdfs[i];
+        document.getElementById('loadingText').textContent = `Mengunggah PDF ${i + 1}/${pdfs.length}... (${file.name})`;
+        try {
+          await ghUploadBlob(file, `input/${file.name}`, `📄 Upload PDF: ${file.name}`);
+          successCount++;
+        } catch (e) {
+          showToast(`❌ Gagal upload ${file.name}: ${e.message}`, 8000);
+        }
+      }
+      hideLoading();
+      if (successCount > 0) {
+        showToast(`✅ ${successCount} PDF berhasil diunggah. Actions akan berjalan dalam 30 detik.`, 5000);
+      }
+    }
+    async function handleBGMUpload(file) {
+      if (!file) return;
+      showLoading('Mengunggah BGM...');
+      try {
+        await ghUploadBlob(file, `input/bgm.mp3`, `🎵 Upload BGM`);
+        showToast(`✅ File BGM berhasil diperbarui!`, 5000);
+      } catch (e) {
+        showToast(`❌ Gagal upload BGM: ${e.message}`, 8000);
+      }
+      hideLoading();
+    }
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    // ===== WORKFLOW ======
+    async function triggerWorkflow() {
+      try {
+        showToast('🔄 Triggering GitHub Actions...');
+        await ghFetch(`/actions/workflows/process-pdf.yml/dispatches`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: GH.branch })
+        });
+        showToast('✅ Workflow dipicu! Silakan refresh dalam 1-2 menit.', 4000);
+      } catch (e) { showToast(`❌ Gagal trigger: ${e.message}`); }
+    }
+    // ===== SETTINGS VIA GITHUB VARS =====
+    async function loadSettings() {
+      try {
+        const data = await ghFetch(`/actions/variables`);
+        const vars = data.variables;
+        if (!vars) return;
+        vars.forEach(v => {
+          const el = document.getElementById(`var_${v.name}`);
+          if (el) { el.value = v.value; }
+        });
+        // Trigger oninput for bgm volume
+        const bgmEl = document.getElementById('var_BGM_VOLUME');
+        if (bgmEl) document.getElementById('bgmVolLabel').textContent = bgmEl.value;
+      } catch (e) { console.warn("Load vars err", e); }
+    }
+    async function saveSettings() {
+      const keys = ['NARRATION_STYLE', 'NARRATOR_VOICE', 'BGM_VOLUME', 'SLIDE_DELAY', 'YT_UPLOAD_DELAY_MINUTES'];
+      showLoading('Menyimpan pengaturan...');
+      let success = 0;
+      for (const k of keys) {
+        const val = document.getElementById(`var_${k}`).value;
+        try {
+          // Check if exists
+          const current = await fetch(`https://api.github.com/repos/${GH.repo}/actions/variables/${k}`, {
+            headers: { Authorization: `token ${GH.token}` }
+          });
+          if (current.status === 404) {
+            // Create
+            await ghFetch('/actions/variables', { method: 'POST', body: JSON.stringify({ name: k, value: val }) });
+          } else {
+            // Patch
+            await ghFetch(`/actions/variables/${k}`, { method: 'PATCH', body: JSON.stringify({ name: k, value: val }) });
+          }
+          success++;
+        } catch (e) {
+          console.error(e);
+          showToast(`Gagal nyimpan ${k}`, 3000);
+        }
+      }
+      hideLoading();
+      if (success > 0) showToast(`✅ Pengaturan berhasil disimpan ke GitHub Variables!`, 4000);
+    }
+  </script>
 </body>
 </html>
